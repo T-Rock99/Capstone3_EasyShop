@@ -19,9 +19,10 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
 
     @Override
     public List<Category> getAllCategories() {
+
         List<Category> categories = new ArrayList<>();
+        String query = "SELECT * FROM categories";
         try {
-            String query = "SELECT * FROM categories";
             PreparedStatement statement = getConnection().prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -54,9 +55,8 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public Category create(Category category) {
         try {
-            String query = "INSERT INTO categories (category_id, name, description) VALUES (?, ?, ?)";
+            String query = "INSERT INTO categories (name, description) VALUES (?, ?)";
             PreparedStatement statement = getConnection().prepareStatement(query);
-            statement.setInt(1, category.getCategoryId());
             statement.setString(1, category.getName());
             statement.setString(2, category.getDescription());
             statement.executeUpdate();
@@ -93,7 +93,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
         }
     }
 
-    private Category mapRow(ResultSet row) throws SQLException {
+    public Category mapRow(ResultSet row) throws SQLException {
         int categoryId = row.getInt("category_id");
         String name = row.getString("name");
         String description = row.getString("description");

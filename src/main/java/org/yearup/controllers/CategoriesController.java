@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
@@ -40,8 +41,7 @@ public class CategoriesController{
     @GetMapping("/categories")
     public List<Category> getAll() {
         // Find and return all categories
-        List<Category> categories = categoryDao.getAllCategories();
-        return categories;
+        return categoryDao.getAllCategories();
     }
 
     // Add the appropriate annotation for a GET action
@@ -58,8 +58,7 @@ public class CategoriesController{
     @GetMapping("/categories/{categoryId}/products")
     public List<Product> getProductsById(@PathVariable int categoryId) {
         // Get a list of products by categoryId
-        List<Product> products = productDao.listByCategoryId(categoryId);
-        return products;
+        return productDao.listByCategoryId(categoryId);
     }
 
     // Add annotation to call this method for a POST action
@@ -67,9 +66,12 @@ public class CategoriesController{
     @PostMapping("/categories")
     @PreAuthorize("hasRole('ADMIN')")
     public Category addCategory(@RequestBody Category category) {
-        // Insert the category
-        categoryDao.create(category);
-        return category;
+        try {
+            return categoryDao.create(category);
+        } catch (Exception e) {
+            // exception required for localhost functionality.
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "These cogs need oiling...");
+        }
     }
 
     // Add annotation to call this method for a PUT (update) action - the URL path must include the categoryId
@@ -78,13 +80,20 @@ public class CategoriesController{
     @PreAuthorize("hasRole('ADMIN')")
     public HashMap<String, String> updateCategory(@PathVariable int id, @RequestBody Category category) {
         // Update the category by id
-        categoryDao.update(id, category);
+        try {
 
-        HashMap<String, String> updateRequest = new HashMap<>();
+            categoryDao.update(id, category);
 
-        updateRequest.put("Message", "A category has been updated!");
+            HashMap<String, String> updateRequest = new HashMap<>();
+            updateRequest.put("Message", "A category has been updated!");
+            return updateRequest;
 
-        return updateRequest;
+        } catch (Exception e){
+            //required exception
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "These cogs 'oughta be lubricated...");
+        }
+
+
     }
 
     // Add annotation to call this method for a DELETE action - the URL path must include the categoryId
@@ -94,11 +103,16 @@ public class CategoriesController{
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public HashMap<String, String> deleteCategory(@PathVariable int id) {
         // Delete the category by id
+        try {
         categoryDao.delete(id);
         HashMap<String, String> deleteRequest = new HashMap<>();
         deleteRequest.put("Message", "A category has been deleted!");
 
         return deleteRequest;
+    } catch (Exception e){
+        //required exception
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "These cogs are all rusted up...");
     }
+        }
 }
 
