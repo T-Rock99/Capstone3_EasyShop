@@ -17,7 +17,7 @@ import java.util.List;
 // add the annotations to make this a REST controller @
 // add the annotation to make this controller the endpoint for the following url
     // http://localhost:8080/categories @
-// add annotation to allow cross site origin requests@
+// add annotation to allow cross site origin requests @
 
 
 @RestController
@@ -37,14 +37,14 @@ public class CategoriesController{
         this.productDao = productDao;
     }
 
-    // Add the appropriate annotation for a GET action
+    // Add the appropriate annotation for a GET action *
     @GetMapping("/categories")
     public List<Category> getAll() {
         // Find and return all categories
         return categoryDao.getAllCategories();
     }
 
-    // Add the appropriate annotation for a GET action
+    // Add the appropriate annotation for a GET action@
     @GetMapping("/categories/{id}")
     public Category getById(@PathVariable int categoryId) {
         // Get the category by id
@@ -54,15 +54,15 @@ public class CategoriesController{
     }
 
     // The URL to return all products in category 1 would look like this:
-    // https://localhost:8080/categories/1/products
+    // https://localhost:8080/categories/1/products @
     @GetMapping("/categories/{categoryId}/products")
     public List<Product> getProductsById(@PathVariable int categoryId) {
         // Get a list of products by categoryId
         return productDao.listByCategoryId(categoryId);
     }
 
-    // Add annotation to call this method for a POST action
-    // Add annotation to ensure that only an ADMIN can call this function
+    // Add annotation to call this method for a POST action@
+    // Add annotation to ensure that only an ADMIN can call this function @
     @PostMapping("/categories")
     @PreAuthorize("hasRole('ADMIN')")
     public Category addCategory(@RequestBody Category category) {
@@ -74,8 +74,8 @@ public class CategoriesController{
         }
     }
 
-    // Add annotation to call this method for a PUT (update) action - the URL path must include the categoryId
-    // Add annotation to ensure that only an ADMIN can call this function
+    // Add annotation to call this method for a PUT (update) action - the URL path must include the categoryId@
+    // Add annotation to ensure that only an ADMIN can call this function **
     @PutMapping("/categories/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public HashMap<String, String> updateCategory(@PathVariable int id, @RequestBody Category category) {
@@ -96,8 +96,8 @@ public class CategoriesController{
 
     }
 
-    // Add annotation to call this method for a DELETE action - the URL path must include the categoryId
-    // Add annotation to ensure that only an ADMIN can call this function
+    // Add annotation to call this method for a DELETE action - the URL path must include the categoryId **
+    // Add annotation to ensure that only an ADMIN can call this function **
     @DeleteMapping("/categories/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
